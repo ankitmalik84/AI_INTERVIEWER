@@ -9,7 +9,7 @@ import asyncio
 
 load_dotenv()
 
-model_client = OpenAIChatCompletionClient(model="gpt-4o-mini",api_key=os.getenv("OPENAI_API_KEY"))
+model_client = OpenAIChatCompletionClient(model="gpt-4o-mini",api_key=os.getenv("OPENAI_API_KEY"), timeout=20)
 
 job_position = "Software Engineer"
 
@@ -20,8 +20,10 @@ interviewer = AssistantAgent(
     system_message=f'''
     You are a professional interviewer for a {job_position} position.
     Ask one clear question at a time and Wait for user to respond. 
-    Ask 5 question in total covering technical skills and experience, problem-solving abilities, and cultural fit.
+    Your job is to continue and ask questions, don't pay any attention to career coach response.
+    Ask 3 question in total covering technical skills and experience, problem-solving abilities, and cultural fit.
     After asking 3 questions, say 'TERMINATE' at the end of the interview.
+    Make question under 50 words.
     '''
 )
 
@@ -39,6 +41,7 @@ career_coach = AssistantAgent(
     You are a career coach specializing in preparing candidates for {job_position} interviews.
     Provide constructive feedback on the candidate's responses and suggest improvements.
     After the interview, summarize the candidate's performance and provide actionable advice.
+    Make it under 100 words.
     '''
 )
 
@@ -57,10 +60,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-
-
-
-
-
-
-
